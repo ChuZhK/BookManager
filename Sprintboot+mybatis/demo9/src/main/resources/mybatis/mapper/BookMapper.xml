@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BookMapper">
+    <select id="getAllBooks"   resultType="BookInfo">
+        select * from book
+    </select>
+    <select id="getByName" resultType="BookInfo">
+        select * from book where name=#{name}
+    </select>
+    <select id="getByWer" resultType="BookInfo">
+        select * from book where auther=#{auther}
+    </select>
+    <select id="getByIdx" resultType="BookInfo">
+        select * from book where bindex=#{bindex}
+    </select>
+    <select id="getByIsbn" resultType="BookInfo">
+        select * from book where isbn=#{isbn}
+    </select>
+
+    <update id="lendBookBook" >
+        update book set status='2' where bindex=#{bindex};
+    </update>
+
+    <insert id="lendBookBorrow">
+        insert into borrow_info values(null,#{bindex},#{uid},current_timestamp)
+    </insert>
+
+    <update id="lendBookUser">
+        update user_info set borrow_num=borrow_num+1 where uid=#{uid}
+    </update>
+
+
+    <select id="isBorrowed" resultType="int">
+        select count(*) from book where bindex=#{bindex} and status='2'
+    </select>
+
+    <select id="isUnborrowed" resultType="int">
+        select count(*) from book where bindex=#{bindex} and status='1'
+    </select>
+
+    <update id="returnBookStatus">
+        update book set status='1' where bindex=#{bindex}
+    </update>
+
+    <select id="returnBookUser" resultType="int">
+        select bid from borrow_info where bindex=#{bindex} order by borrow_time  desc limit 1
+    </select>
+
+    <insert id="returnBookInfo" >
+        insert into return_info values(null,#{bindex},#{bid},current_timestamp)
+    </insert>
+
+    <update id="returnBookNum">
+        update user_info set return_num=return_num+1 where uid=#{uid}
+    </update>
+
+    <select id="returnDays" resultType="int">
+        select DATEDIFF(now(), borrow_time)+1 from borrow_info where bindex=#{bindex} order by borrow_time  desc limit 1
+    </select>
+
+    <select id="returnLev" resultType="int">
+        select lev from user_info where uid =#{uid}
+    </select>
+
+    <update id="returnFine">
+        update user_info set wage=wage+#{wage} where uid=#{uid}
+    </update>
+
+    <update id="saveBook">
+        update book set name=#{name}, isbn=#{isbn}, price=#{price}, auther=#{auther}, status=#{status}, pub=#{pub}
+            where bindex=#{bindex}
+    </update>
+
+    <select id="confirmBook" resultType="int">
+        select count(*) from book where name=#{name} and isbn=#{isbn} and price=#{price} and auther=#{auther} and bindex=#{bindex}
+                and status=#{status} and pub=#{pub}
+    </select>
+
+    <insert id="addBook">
+        insert into book values(#{name},#{isbn},#{price},#{auther},#{bindex},#{status},#{pub})
+    </insert>
+
+    <delete id="deleteBook">
+        delete from book where bindex=#{bindex};
+    </delete>
+
+    <update id="saveBase">
+        update book set name=#{name},price=#{price},auther=#{auther},pub=#{pub} where isbn=#{isbn}
+    </update>
+
+    <select id="confirmIsbn" resultType="int">
+        select count(*) from book where isbn=#{isbn}
+    </select>
+
+    <select id="confirmBase" resultType="int">
+        select count(*) from book where name=#{name} and isbn=#{isbn} and price=#{price} and auther=#{auther} and pub=#{pub}
+    </select>
+
+    <delete id="deleteBase">
+        delete from book where name=#{name} and isbn=#{isbn} and price=#{price} and auther=#{auther} and pub=#{pub}
+    </delete>
+
+    <update id="fineUserInBook">
+        update user_info set wage=wage-#{wage} where uid =#{uid}
+    </update>
+
+    <select id="checkStatus" resultType="int">
+        select count(*) from book where bindex=#{bindex} and status='1'
+    </select>
+</mapper>

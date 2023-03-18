@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ReturnMapper">
+    <select id="ReturnAll" resultType="ReturnInfo">
+        select * from return_info
+    </select>
+
+    <select id="ReturnById" resultType="ReturnInfo">
+        select * from return_info where bid=#{bid}
+    </select>
+
+    <select id="ReturnInfoByIndex" resultType="ReturnInfo">
+        select * from return_info where bindex=#{bindex}
+    </select>
+
+</mapper>
